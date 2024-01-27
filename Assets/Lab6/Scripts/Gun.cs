@@ -4,45 +4,45 @@ namespace Assets.Lab6.Scripts
 {
     public class Gun : MonoBehaviour
     {
-        public int damage = 10;
-        public float range = 1000f;
+        [SerializeField] private int _damage = 10;
 
-        public float fireRate = 10;
-        public float nextShot = 0;
+        [SerializeField] private float _fireRate = 10;
+        [SerializeField] private float _nextShot = 0;
 
-        public Camera cam;
-        public GameObject flash;
-        public ParticleSystem onHit;
+        [SerializeField] private Camera _cam;
+        [SerializeField] private GameObject _flash;
+        [SerializeField] private ParticleSystem _onHit;
 
-        public SleeveSpawner sleeveSpawner;
+        [SerializeField] private SleeveSpawner _sleeveSpawner;
 
         private void Update()
         {
-            if (Input.GetMouseButton(0) && Time.time >= nextShot)
+            if (Input.GetMouseButton(0) && Time.time >= _nextShot)
             {
-                flash.SetActive(true);
-                nextShot = Time.time + 1 / fireRate;
+                _flash.SetActive(true);
+                _nextShot = Time.time + 1 / _fireRate;
                 Shoot();
-                sleeveSpawner.SpawnSleeve();
+                _sleeveSpawner.SpawnSleeve();
             }
 
             if (Input.GetMouseButtonUp(0))
             {
-                flash.SetActive(false);
+                _flash.SetActive(false);
             }
         }
 
         private void Shoot()
         {
             RaycastHit hit;
-            if(Physics.Raycast(cam.transform.position, cam.transform.forward, out hit))
+            if(Physics.Raycast(_cam.transform.position, _cam.transform.forward, out hit))
             {
                 if (hit.transform.CompareTag("Target"))
                 {
-                    Enemy e = hit.transform.GetComponent<Enemy>();
-                    e.Hit(damage);
+                    //Enemy e = hit.transform.GetComponent<Enemy>();
+                    //e.Hit(damage);
+                    hit.transform.GetComponent<Enemy>().Hit(_damage);
                 }
-                ParticleSystem hitEffect = Instantiate(onHit, hit.point, Quaternion.LookRotation(hit.normal));
+                ParticleSystem hitEffect = Instantiate(_onHit, hit.point, Quaternion.LookRotation(hit.normal));
                 hitEffect.Play();
                 Destroy(hitEffect.gameObject, 1f);
             }

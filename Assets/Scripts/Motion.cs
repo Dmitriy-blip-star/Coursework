@@ -2,23 +2,23 @@ using UnityEngine;
 
 public class Motion : MonoBehaviour
 {
-    public float speed = 1.0f;
-    public float amplitude = 1.0f;
-    Vector3 startPosition;
+    [SerializeField] private float _speed = 1.0f;
+    [SerializeField] private float _amplitude = 1.0f;
+    private Vector3 _startPosition;
 
-    public float rotationSpeed = 10f;
+    [SerializeField] private float _rotationSpeed = 10f;
 
     private void Start()
     {
-        startPosition = transform.position;
+        _startPosition = transform.position;
     }
 
     private void Update()
     {
-        float newY = startPosition.y + Mathf.Sin(Time.time * speed) * amplitude;
+        float newY = _startPosition.y + Mathf.Sin(Time.time * _speed) * _amplitude;
 
         transform.position = new Vector3(transform.position.x, newY, transform.position.z);
 
-        transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+        transform.Rotate(Vector3.up, _rotationSpeed * Time.deltaTime);
     }
 }

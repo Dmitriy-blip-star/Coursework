@@ -5,21 +5,20 @@ namespace Assets.Lab6.Scripts
 {
     public class SleeveSpawner : MonoBehaviour
     {
-        public float rangeSpawn = 0.0f;
-        public float force = 0.0f;
+        [SerializeField] private float _rangeSpawn = 0.0f;
+        [SerializeField] private float _force = 0.0f;
 
-        public GameObject sleeve;
+        [SerializeField] private GameObject _sleeve;
 
         public void SpawnSleeve()
         {
-            var objectToSpawn = sleeve;
+            var objectToSpawn = _sleeve;
 
             var spawnedObject = Instantiate(objectToSpawn, transform.position, transform.rotation);
-            //spawnedObject.transform.position = new Vector3(transform.position.x + Random.Range(-rangeSpawn, rangeSpawn), transform.position.y, transform.position.z);
 
             var spawnedObjectRigidbody = spawnedObject.GetComponent<Rigidbody>();
-            spawnedObjectRigidbody.AddForce(transform.forward * force, ForceMode.Impulse);
-            spawnedObjectRigidbody.AddTorque(transform.forward * force, ForceMode.Impulse);
+            spawnedObjectRigidbody.AddForce(transform.forward * _force, ForceMode.Impulse);
+            spawnedObjectRigidbody.AddTorque(transform.forward * _force, ForceMode.Impulse);
         }
     }
 }

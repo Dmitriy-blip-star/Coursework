@@ -1,43 +1,43 @@
-using System;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class Movement : MonoBehaviour
 {
     [Range(50, 200)]
-    public float walkSpeed = 100;
+    [SerializeField] private float _walkSpeed = 100;
     [Range(100, 500)]
-    public float runSpeed = 200;
-    private float mSpeed = 100f;
+    [SerializeField] private float _runSpeed = 200;
+    private float _mSpeed = 100f;
 
-    public GameObject failPanel;
-    public GameObject winPanel;
-    public GameObject nextLvlPanel;
+    [SerializeField] private GameObject _failPanel;
+    [SerializeField] private GameObject _winPanel;
+    [SerializeField] private GameObject _nextLvlPanel;
 
-    public int maxHealth = 100;
-    public static int health;
+    [SerializeField] private int MaxHealth = 100;
+    public static int Health { get; private set; }
 
-    public Camera cam;
-    public float baseFOV = 75;
-    public float sprintFOV = 90;
-    public float speedChangeFOV = 2f;
-    public float curentFOV;
+    [SerializeField] private Camera _cam;
+    [SerializeField] private float _baseFOV = 75;
+    [SerializeField] private float _sprintFOV = 90;
+    [SerializeField] private float speedChangeFOV = 2f;
+    private float _curentFOV;
 
-    Animator anim;
-    Rigidbody rb;
+    private Animator _anim;
+    private Rigidbody _rb;
 
-    public static int items;
-    public static int itemsForWin = 1;
+    public static int Items { get; private set; }
+    public static int ItemsForWin { get; private set; } = 10;
 
     void Start()
     {
-        health = maxHealth;
-        anim= GetComponent<Animator>();
-        curentFOV = baseFOV;
-        rb = GetComponent<Rigidbody>();
-        items = 0;
+        
+        Health = MaxHealth;
+        _anim= GetComponent<Animator>();
+        _curentFOV = _baseFOV;
+        _rb = GetComponent<Rigidbody>();
+        Items = 0;
         Time.timeScale = 1;
     }
+
     void FixedUpdate()
     {
         bool sprint = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift));
@@ -45,64 +45,65 @@ public class Movement : MonoBehaviour
         float xMove = Input.GetAxis("Horizontal");
         float zMove = Input.GetAxis("Vertical");
 
-        if (sprint == true && zMove > 0)
+        if (sprint && zMove > 0)
         {
-            mSpeed = runSpeed;
-            curentFOV += speedChangeFOV * Time.deltaTime;
-            curentFOV = Mathf.Clamp(curentFOV, baseFOV, sprintFOV);
-            cam.fieldOfView = curentFOV;           
+            _mSpeed = _runSpeed;
+            _curentFOV += speedChangeFOV * Time.deltaTime;
+            _curentFOV = Mathf.Clamp(_curentFOV, _baseFOV, _sprintFOV);
+            _cam.fieldOfView = _curentFOV;           
         }
         else
         {
-            mSpeed = walkSpeed;
-            curentFOV -= speedChangeFOV * Time.deltaTime;
-            curentFOV = Mathf.Clamp(curentFOV, baseFOV, sprintFOV);
-            cam.fieldOfView = curentFOV;
+            _mSpeed = _walkSpeed;
+            _curentFOV -= speedChangeFOV * Time.deltaTime;
+            _curentFOV = Mathf.Clamp(_curentFOV, _baseFOV, _sprintFOV);
+            _cam.fieldOfView = _curentFOV;
         }
 
-        if (rb.velocity.x > 0.1f || rb.velocity.z > 0.1f)
+        if (_rb.velocity.x > 0.1f || _rb.velocity.z > 0.1f)
         {
-            anim.SetInteger("state", 1);
+            _anim.SetInteger("state", 1);
         }
         else
         {
-            anim.SetInteger("state", 0);
+            _anim.SetInteger("state", 0);
         }
 
         Vector3 dir = new Vector3(xMove, 0, zMove);
         dir.Normalize();
         
-        Vector3 v = transform.TransformDirection(dir) * mSpeed * Time.fixedDeltaTime;
-        v.y = rb.velocity.y;
-        rb.velocity = v;
+        Vector3 v = transform.TransformDirection(dir) * _mSpeed * Time.fixedDeltaTime;
+        v.y = _rb.velocity.y;
+        _rb.velocity = v;
+
+        
     }
 
     public void TakeDamage(int damage)
     {
-        health -= damage;
-        if (health <= 0)
+        Health -= damage;
+        if (Health <= 0)
         {
             Cursor.lockState = CursorLockMode.None;
-            failPanel.SetActive(true);
-            itemsForWin = 1;
+            _failPanel.SetActive(true);
             Time.timeScale = 0;
         }
     }
 
     public void PickupItem()
     {
-        items++;
-        if (items == 2)
+        Items++;
+        if (Items == 20)
         {
             Cursor.lockState = CursorLockMode.None;
-            winPanel.SetActive(true);
+            _winPanel.SetActive(true);
             Time.timeScale = 0;
         }
-        else if(items == itemsForWin)
+        else if(Items == ItemsForWin)
         {
-            itemsForWin *= 2;
+            ItemsForWin *= 2;
             Cursor.lockState = CursorLockMode.None;
-            nextLvlPanel.SetActive(true);
+            _nextLvlPanel.SetActive(true);
             Time.timeScale = 0;
         }
     }

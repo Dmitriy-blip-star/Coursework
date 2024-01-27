@@ -2,31 +2,30 @@
 
     public class Looking : MonoBehaviour
 {
-    public Transform player;
-    public Transform cam;
+    [SerializeField] private Transform _player;
+    [SerializeField] private Transform _cam;
     [Range(50f, 1000f)]
-    public float xSens = 70f;
+    [SerializeField] private float _xSens = 70f;
     [Range(50f, 1000f)]
-    public float ySens = 70f;
-    Quaternion center;
+    [SerializeField] private float _ySens = 70f;
+    private Quaternion _center;
     void Start()
     {
-        center = cam.localRotation;
+        _center = _cam.localRotation;
         Cursor.lockState = CursorLockMode.Locked;
     }
 
     void Update()
     {
+        float mouseY = Input.GetAxis("Mouse Y") * _ySens * Time.deltaTime;
+        Quaternion yRot = _cam.localRotation * Quaternion.AngleAxis(mouseY, -Vector3.right);
         
-        float mouseY = Input.GetAxis("Mouse Y") * ySens * Time.deltaTime;
-        Quaternion yRot = cam.localRotation * Quaternion.AngleAxis(mouseY, -Vector3.right);
-        
-        if (Quaternion.Angle(center, yRot) < 90f)
-            cam.localRotation = yRot; 
+        if (Quaternion.Angle(_center, yRot) < 90f)
+            _cam.localRotation = yRot; 
                                       
-        float mouseX = Input.GetAxis("Mouse X") * xSens * Time.deltaTime;
-        Quaternion xRot = player.localRotation * Quaternion.AngleAxis(mouseX, Vector3.up);
-        player.localRotation = xRot;
+        float mouseX = Input.GetAxis("Mouse X") * _xSens * Time.deltaTime;
+        Quaternion xRot = _player.localRotation * Quaternion.AngleAxis(mouseX, Vector3.up);
+        _player.localRotation = xRot;
 
     }
 }
